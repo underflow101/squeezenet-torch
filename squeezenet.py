@@ -5,22 +5,24 @@
 # Description: Main source code of SqueezeNet
 #####################################################################
 
+import os, shutil, time
+import numpy as np
+import argparse
+from datetime import datetime
+import zipfile
+
 import torch
+from torch.backends import cudnn
+import torchvision
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
-from torchvision import transforms, datasets
+from tqdm import tqdm
 
-from model import squeezenet
-from torchsummary import summary
+from model import SqueezeNet
 
-USE_CUDA = torch.cuda.is_available()
-DEVICE = torch.device("cuda" if USE_CUDA else "cpu")
+from utils import Solver
+from dataLoader import get_loader
+from hyperparameter import *
 
 
-print("SqueezeNet Summary")
-model = squeezenet()
-summary(model.cuda(), (3, 224, 224))
-
-def train(model, train_loader, optimizer, epoch):
-    model.train()
